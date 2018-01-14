@@ -5,9 +5,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -16,45 +17,46 @@ import android.util.Log;
 
 public class SpeechRecognitionPermissions extends Fragment {
 
-    private static final int PERMISSION_REQUEST_AUDIO = 123400;
-    private Boolean permissionGiven = false;
+    private static final int PERMISSION_REQUEST_AUDIO = 123;
     private OnSpeechRecognitionPermissionListener onSpeechRecognitionPermissionListener;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+    
 
-        /**
-         * The OnSpeechRecognitionPermissionListener is implemented
-         * in client (the context instance using SpeechRecognition).
-         * So getActivity() will return the clients class (context)
-         * that implements this Permission Listener
-         */
-        this.onSpeechRecognitionPermissionListener = (OnSpeechRecognitionPermissionListener)getActivity();
+    public void setSpeechRecognitionPermissionListener(@NonNull OnSpeechRecognitionPermissionListener onSpeechRecognitionPermissionListener){
+        this.onSpeechRecognitionPermissionListener = onSpeechRecognitionPermissionListener;
     }
 
-    public void requestPermissions(Context context){
+    public void requestNeePermissions(@NonNull Context context){
 
-        /*
-          * Using ContextCompat because of backwards compatibility
-          * Context.checkSelfPermission requires API level 23, min is 19
-         */
         if (!isPermissionGiven(context)) {
-            ActivityCompat.requestPermissions((Activity)context,
-                    new String[]{Manifest.permission.RECORD_AUDIO},
-                    PERMISSION_REQUEST_AUDIO);
+             /*
+              * Using requestPermissions from Marshmallow and above (>= API 23)
+              * Below Marshmallow, the app will automatically request
+              * for the permission in manifest when installed
+              */
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST_AUDIO);
         }
 
     }
 
-    public Boolean isPermissionGiven(Context context){
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    public Boolean isPermissionGiven(@NonNull Context context){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+
+        return true; //permission already request on install if < API 23
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PERMISSION_REQUEST_AUDIO){
 
             // If request is granted, the result arrays are not empty.
@@ -62,8 +64,8 @@ public class SpeechRecognitionPermissions extends Fragment {
                 onSpeechRecognitionPermissionListener.onPermissionGranted();
                 return;
             }
-
-            onSpeechRecognitionPermissionListener.onPermissionDenied();
         }
+
+        onSpeechRecognitionPermissionListener.onPermissionDenied();
     }
 }

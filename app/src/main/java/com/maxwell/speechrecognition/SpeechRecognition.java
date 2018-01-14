@@ -1,5 +1,8 @@
 package com.maxwell.speechrecognition;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
@@ -20,6 +23,7 @@ public class SpeechRecognition {
     private Intent recognizerIntent;
     private OnSpeechRecognitionListener onSpeechRecognitionListener;
     private boolean enableOnlyOfflineRecognition = false;
+    private boolean requestPermission = true;
 
     /**
      * SpeechRecognition Constructor
@@ -61,9 +65,14 @@ public class SpeechRecognition {
 
     public void startSpeechRecognition(){
         //TODO: check if speech recognition is enabled on this phone
-        throw new UnsupportedOperationException();
     }
 
+    /**
+     * Sets SpeechRecognition to use only offline recognition engine
+     * Disabled by default - meaning either internet or offline recognition engines may be used
+     * @param  onlyOfflineRecognition  true or false (false by default)
+     * @since API level 23
+     */
     public void useOnlyOfflineRecognition(boolean onlyOfflineRecognition){
         this.enableOnlyOfflineRecognition = onlyOfflineRecognition;
     }
@@ -85,14 +94,12 @@ public class SpeechRecognition {
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MAX_RESULT_COUNT);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 
-         /*
-          * If there is no internet on the phone, use offline speech recognition.
-          * Note: this is much slower and Offline mode must be enabled in settings
-          * Requires API level 23
+        /*
+         * Only offline recognition works from API level 23
          */
-         if(enableOnlyOfflineRecognition){
-             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
-         }
+        if(enableOnlyOfflineRecognition){
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+        }
 
         //TODO: Set preferred Speech recognition Language
     }

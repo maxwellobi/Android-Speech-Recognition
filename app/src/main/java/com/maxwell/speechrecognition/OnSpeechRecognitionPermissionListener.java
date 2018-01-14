@@ -5,4 +5,8 @@ package com.maxwell.speechrecognition;
  */
 
 public interface OnSpeechRecognitionPermissionListener {
+
+    void onPermissionGranted();
+
+    void onPermissionDenied();
 }

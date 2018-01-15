@@ -116,6 +116,15 @@ public class SpeechRecognition {
     }
 
     /**
+     * Checks if speech recognition is supported on the device.
+     * If you try to use {@link SpeechRecognition} when your device does not support it,
+     * {@link IllegalStateException} will be thrown
+     */
+    public boolean isSpeechRecognitionAvailable(){
+        return SpeechRecognitionUtilities.isSpeechRecognitionEnabled(context);
+    }
+
+    /**
      * This allows {@link SpeechRecognition} to use Google Voice Ime.
      * <strong>Note: This prevents you from doing Continuous Recognition</strong>
      * You will be able to get the final text result only after you are done talking.
@@ -198,7 +207,7 @@ public class SpeechRecognition {
 
     private void initializeSpeechRecognitionParameters(){
 
-        if(!SpeechRecognitionUtilities.isSpeechRecognitionEnabled(context))
+        if(!isSpeechRecognitionAvailable())
             throw new IllegalStateException(context.getString(R.string.speech_not_enabled_exception_text));
 
          /*

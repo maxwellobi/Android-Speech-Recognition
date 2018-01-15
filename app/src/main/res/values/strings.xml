@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SpeechRecognition</string>
+    <string name="security_exception_text">Permission Denial, you must grant RECORD_AUDIO permission or set handleAudioPermissions(true)</string>
+    <string name="set_permission_listener_exception_text">This operation is not supported. Set handleAudioPermissions(true) to allow</string>
+    <string name="permission_listener_null_exception_text">OnSpeechRecognitionPermissionListener has not been initialized</string>
+    <string name="speech_listener_null_exception_text">OnSpeechRecognitionListener has not been initialized</string>
+    <string name="speech_not_enabled_exception_text">Speech Recognition is not available on this device</string>
 </resources>

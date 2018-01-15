@@ -9,10 +9,10 @@ import android.speech.RecognitionListener;
 
 final class SpeechRecognitionListener implements RecognitionListener {
 
-    private OnSpeechRecognitionListener clientListener;
+    private OnSpeechRecognitionListener onSpeechRecognitionListener;
 
     public SpeechRecognitionListener(OnSpeechRecognitionListener onSpeechRecognizerListener){
-        this.clientListener = onSpeechRecognizerListener;
+        this.onSpeechRecognitionListener = onSpeechRecognizerListener;
     }
 
     @Override

@@ -25,27 +25,23 @@ public class SpeechRecognitionPermissions extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
-    
 
-    public void setSpeechRecognitionPermissionListener(@NonNull OnSpeechRecognitionPermissionListener onSpeechRecognitionPermissionListener){
+    protected void setSpeechRecognitionPermissionListener(@NonNull OnSpeechRecognitionPermissionListener onSpeechRecognitionPermissionListener){
         this.onSpeechRecognitionPermissionListener = onSpeechRecognitionPermissionListener;
     }
 
-    public void requestNeePermissions(@NonNull Context context){
+    protected void requestPermissions(){
 
-        if (!isPermissionGiven(context)) {
-             /*
-              * Using requestPermissions from Marshmallow and above (>= API 23)
-              * Below Marshmallow, the app will automatically request
-              * for the permission in manifest when installed
-              */
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST_AUDIO);
-        }
-
+        /*
+          * Using requestPermissions from Marshmallow and above (>= API 23)
+          * Below Marshmallow, the app will automatically request
+          * for the permission in manifest when installed
+          */
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST_AUDIO);
     }
 
-    public Boolean isPermissionGiven(@NonNull Context context){
+    protected Boolean isPermissionGiven(@NonNull Context context){
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;

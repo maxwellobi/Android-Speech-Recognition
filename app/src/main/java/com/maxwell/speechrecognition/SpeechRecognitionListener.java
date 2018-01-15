@@ -26,19 +26,6 @@ final class SpeechRecognitionListener implements RecognitionListener {
         return onSpeechRecognitionListener;
     }
 
-    private void getResultFromBundle(Bundle bundle){
-        //sentence with highest confidence score is in position 0
-        ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
-        if(matches != null && matches.size() > 0){
-            String words = matches.get(0);
-
-            Log.i(SpeechRecognitionListener.class.getSimpleName(), words);
-            onSpeechRecognitionListener.OnSpeechRecognitionFinalResult(words);
-
-        }else onError(SpeechRecognizer.ERROR_NO_MATCH);
-    }
-
     @Override
     public void onReadyForSpeech(Bundle bundle) {}
 
@@ -116,12 +103,31 @@ final class SpeechRecognitionListener implements RecognitionListener {
 
     @Override
     public void onResults(Bundle bundle) {
-        this.getResultFromBundle(bundle);
+
+        //sentence with highest confidence score is in position 0
+        ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        if(matches != null && matches.size() > 0){
+            String sentence = matches.get(0);
+
+            Log.i(SpeechRecognitionListener.class.getSimpleName(), sentence);
+            onSpeechRecognitionListener.OnSpeechRecognitionFinalResult(sentence);
+
+        }else onError(SpeechRecognizer.ERROR_NO_MATCH);
     }
 
     @Override
     public void onPartialResults(Bundle bundle) {
-        this.getResultFromBundle(bundle);
+        //sentence with highest confidence score is in position 0
+        ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        if(matches != null && matches.size() > 0){
+            String word = matches.get(0);
+
+            Log.i(SpeechRecognitionListener.class.getSimpleName(), word);
+            onSpeechRecognitionListener.OnSpeechRecognitionCurrentResult(word);
+
+        }else onError(SpeechRecognizer.ERROR_NO_MATCH);
     }
 
     @Override

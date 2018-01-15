@@ -9,6 +9,7 @@ import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -17,7 +18,7 @@ import android.util.Log;
 
 public class SpeechRecognition {
 
-    public static final int MAX_RESULT_COUNT = 3;
+    static final int MAX_RESULT_COUNT = 3;
 
     private Context context;
     private SpeechRecognizer speechRecognizer;
@@ -121,8 +122,9 @@ public class SpeechRecognition {
      *
      * @param  useGoogleIme  true or false whether to use GoogleVoiceIme or not (false by default)
      * @param  prompt       the text prompt to display on the GoogleVoiceIme dialog.
+     *                      pass Null to use the default prompt.
      */
-    public void useGoogleImeRecognition(boolean useGoogleIme, String prompt){
+    public void useGoogleImeRecognition(boolean useGoogleIme, @Nullable  String prompt){
 
         if(prompt != null)
             this.googleImePrompt = prompt;
@@ -131,39 +133,49 @@ public class SpeechRecognition {
     }
 
     public void startSpeechRecognition(){
+         /*
+         * Set the SpeechRecognizerListener and SpeechRecognitionPermissionListener here
+         * so that a later call to setSpeechRecognitionListener() or setSpeechRecognitionPermissionListener()
+         * can still affect SpeechRecognition when you start listening
+         */
 
         checkProperties();
+        SpeechRecognitionListener speechRecognitionListener = new SpeechRecognitionListener(
+                this.onSpeechRecognitionListener, context);
 
-        //Permission is not given yet, and handlePermission is false, throw error
         if(!speechRecognitionPermissions.isPermissionGiven(context)){
 
             if(!handlePermissions)
                 throw new SecurityException(context.getString(R.string.security_exception_text));
 
+            speechRecognitionPermissions.setSpeechRecognitionPermissionListener(this.onSpeechRecognitionPermissionListener);
             speechRecognitionPermissions.requestPermissions();
 
         }else{
 
-             /*
-             * Set the SpeechRecognizerListener here so that a later call to setSpeechRecognitionListener()
-             * can still affect SpeechRecognition when you start listening
+            /**
+             * Trigger the  OnSpeechRecognitionStarted() callback to notify client that
+             * SpeechRecognition has started listening.
+             * NOTE: do this here and not in {@link SpeechRecognitionListener} so that
+             * GoogleIme can still notify via same Listener
              */
-
+            onSpeechRecognitionListener.OnSpeechRecognitionStarted();
             if(useGoogleIme){
 
                 googleImeSpeechRecognition.setVoicePrompt(googleImePrompt);
-                googleImeSpeechRecognition.setSpeechRecognitionListener(this.onSpeechRecognitionListener);
+                googleImeSpeechRecognition.setSpeechRecognitionListener(speechRecognitionListener);
                 googleImeSpeechRecognition.startGoogleIme();
                 return;
             }
 
-            SpeechRecognitionListener speechRecognitionListener = new SpeechRecognitionListener(this.onSpeechRecognitionListener);
             speechRecognizer.setRecognitionListener(speechRecognitionListener);
             speechRecognizer.startListening(recognizerIntent);
         }
     }
 
     public void stopSpeechRecognition(){
+
+        onSpeechRecognitionListener.OnSpeechRecognitionStopped();
         speechRecognizer.stopListening();
 
         if(speechRecognizer != null)
@@ -189,26 +201,21 @@ public class SpeechRecognition {
         if(!SpeechRecognitionUtilities.isSpeechRecognitionEnabled(context))
             throw new IllegalStateException(context.getString(R.string.speech_not_enabled_exception_text));
 
-        //initialize googleIme here for lazy loading the fragment even if its not used
+         /*
+          * Initialize the SpeechRecognitionPermissions and googleIme here
+          * for lazy loading the fragments
+         */
         initializeGoogleVoiceImeParameters();
-
-         /*
-         *Initialize the SpeechRecognizer and set listener with onSpeechRecognizerListener implemented by client
-         */
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
-
-         /*
-          * Initialize the SpeechRecognitionPermissions and set listener with
-          * OnSpeechRecognitionPermissionListener implemented by client
-         */
         speechRecognitionPermissions = new SpeechRecognitionPermissions();
         ((Activity) context).getFragmentManager()
                 .beginTransaction()
                 .add(speechRecognitionPermissions, SpeechRecognition.class.getSimpleName())
                 .commit();
 
-        //set the permission listener
-        speechRecognitionPermissions.setSpeechRecognitionPermissionListener(this.onSpeechRecognitionPermissionListener);
+         /*
+         *Initialize the SpeechRecognizer and set listener with onSpeechRecognizerListener implemented by client
+         */
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
 
         /*
          *Initialize the Speech recognition intent with default Language

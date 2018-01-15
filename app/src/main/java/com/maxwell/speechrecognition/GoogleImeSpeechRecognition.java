@@ -4,9 +4,12 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -16,7 +19,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class GoogleImeSpeechRecognition extends Fragment {
 
-    private OnSpeechRecognitionListener onSpeechRecognitionListener;
+    private SpeechRecognitionListener speechRecognitionListener;
     private final int REQUEST_CODE = 123;
     private Intent recognizerIntent;
     private String voicePrompt;
@@ -29,21 +32,21 @@ public class GoogleImeSpeechRecognition extends Fragment {
         initialize();
     }
 
-    protected void initialize(){
+    void initialize(){
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, SpeechRecognition.MAX_RESULT_COUNT);
     }
 
-    protected void setSpeechRecognitionListener(@NonNull OnSpeechRecognitionListener onSpeechRecognitionListener){
-        this.onSpeechRecognitionListener = onSpeechRecognitionListener;
+    void setSpeechRecognitionListener(@NonNull SpeechRecognitionListener speechRecognitionListener){
+        this.speechRecognitionListener = speechRecognitionListener;
     }
 
-    protected void setVoicePrompt(String voicePrompt){
+    void setVoicePrompt(String voicePrompt){
         this.voicePrompt = voicePrompt;
     }
 
-    public void startGoogleIme(){
+    void startGoogleIme(){
         if(recognizerIntent == null) initialize();
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, voicePrompt);
 
@@ -54,9 +57,22 @@ public class GoogleImeSpeechRecognition extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i(">>", "GoogleVoiceIme");
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){
-            Log.i(">>", "GoogleVoiceIme OK");
+
+            /**
+             * The matched text with the highest confidence score will be in position 0
+             */
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+            if(matches != null && matches.size() >0){
+                String sentence = matches.get(0);
+                speechRecognitionListener.getOnSpeechRecognitionListener()
+                        .OnSpeechRecognitionFinalResult(sentence);
+
+                return;
+            }
         }
+
+        speechRecognitionListener.onError(SpeechRecognizer.ERROR_NO_MATCH);
     }
 }

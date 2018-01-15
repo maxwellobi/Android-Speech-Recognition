@@ -16,7 +16,7 @@ import java.util.List;
 
 final class SpeechRecognitionUtilities {
 
-    protected static boolean isInternetEnabled(Context context)
+    static boolean isInternetEnabled(Context context)
     {
         boolean isWifiConnected = false;
         boolean isMobileConnected = false;
@@ -40,7 +40,7 @@ final class SpeechRecognitionUtilities {
         return isWifiConnected || isMobileConnected;
     }
 
-    protected static boolean isSpeechRecognitionEnabled(Context context){
+    static boolean isSpeechRecognitionEnabled(Context context){
 
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);

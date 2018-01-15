@@ -26,11 +26,11 @@ public class SpeechRecognitionPermissions extends Fragment {
         setRetainInstance(true);
     }
 
-    protected void setSpeechRecognitionPermissionListener(@NonNull OnSpeechRecognitionPermissionListener onSpeechRecognitionPermissionListener){
+    void setSpeechRecognitionPermissionListener(@NonNull OnSpeechRecognitionPermissionListener onSpeechRecognitionPermissionListener){
         this.onSpeechRecognitionPermissionListener = onSpeechRecognitionPermissionListener;
     }
 
-    protected void requestPermissions(){
+    void requestPermissions(){
 
         /*
           * Using requestPermissions from Marshmallow and above (>= API 23)
@@ -41,7 +41,7 @@ public class SpeechRecognitionPermissions extends Fragment {
             requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST_AUDIO);
     }
 
-    protected Boolean isPermissionGiven(@NonNull Context context){
+    Boolean isPermissionGiven(@NonNull Context context){
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;

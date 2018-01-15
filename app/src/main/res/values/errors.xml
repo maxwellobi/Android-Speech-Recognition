@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_audio">There is a problem with your audio recording device</string>
+    <string name="error_client">A client error has occurred</string>
+    <string name="error_permission">You do not have sufficient permissions. Make sure RECORD_AUDIO permission is granted</string>
+    <string name="error_network">A network error has occurred. If you are using Marshmallow and above you can temporarily set offlinemode true</string>
+    <string name="error_no_match">SpeechRecognition could not find a match. Make sure the right language is set</string>
+    <string name="error_recognizer_busy">SpeechRecognition is busy at the moment. Try using multiple instances to listen </string>
+    <string name="error_no_input">No speech input detected</string>
+    <string name="error_server">SpeechRecognition server error. Try again in few minutes</string>
+    <string name="error_undefined">Undefined error</string>
+</resources>

@@ -5,4 +5,14 @@ package com.maxwell.speechrecognition;
  */
 
 public interface OnSpeechRecognitionListener {
+
+    void OnSpeechRecognitionStarted();
+
+    void OnSpeechRecognitionStopped();
+
+    void OnSpeechRecognitionFinalResult(String finalSentence);
+
+    void OnSpeechRecognitionCurrentResult(String currentWord);
+
+    void OnSpeechRecognitionError(int errorCode, String errorMsg);
 }

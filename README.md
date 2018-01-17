@@ -55,7 +55,7 @@ protected void onCreate(Bundle savedInstanceState) {
 	speechRecognition.setSpeechRecognitionListener(this);
 
 	Button speakButton = findViewById(R.id.button);
-    speakButton.setOnClickListener(new View.OnClickListener(){
+    	speakButton.setOnClickListener(new View.OnClickListener(){
 	    @Override
 	    public void onClick(View view) {
 		    speechRecognition.startSpeechRecognition();   

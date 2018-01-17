@@ -111,7 +111,7 @@ public void OnSpeechRecognitionError(int i, String s) {}
 |-----------|---------|---------------|
 | `setContext(Context)` | Null | Use this to change `SpeechRecognition` current context|
 |`setPreferredLanguage(String)`	|-	| Not yet implemented	|
-|`handleAudioPermissions(boolean)` | true | set true to handle audio permissions yourself. If `true`, then no need for `setSpeechRecognitionPermissionListener()` |
+|`handleAudioPermissions(boolean)` | true | set false to handle audio permissions yourself. If `false`, then no need to `setSpeechRecognitionPermissionListener()` |
 | `useOnlyOfflineRecognition(boolean)` | false | set true to force android to use its Offline Recognition Engine. By default, android uses either or both online and offline. `false` is recommended. |
 | `isSpeechRecognitionAvailable()` | - | returns true or false whether the device supports speech recognition or not |
 | `useGoogleImeRecognition(boolean, String)` | false | whether to use GoogleVoiceIme Dialog or not. If true, set a `prompt` to display on the dialog or null to use default. |

@@ -8,7 +8,7 @@ This library lets you perform continuous voice recognition in your android app w
 **Gradle** 
 
 Add the Jitpack repository to your root build.gradle file
-```json
+```java
 allprojects {
 	repositories {
 		...
@@ -17,7 +17,7 @@ allprojects {
 }
 ```
 Add the dependency to your app's build.gradle file
-```json
+```java
 dependencies {
 	compile 'com.github.maxwellobi:android-speech-recognition:v1.0.0-beta.1'
 }

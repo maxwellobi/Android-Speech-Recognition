@@ -57,11 +57,14 @@ public class SpeechRecognitionPermissions extends Fragment {
 
             // If request is granted, the result arrays are not empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                onSpeechRecognitionPermissionListener.onPermissionGranted();
+                if (onSpeechRecognitionPermissionListener != null) {
+                    onSpeechRecognitionPermissionListener.onPermissionGranted();
+                }
                 return;
             }
         }
-
-        onSpeechRecognitionPermissionListener.onPermissionDenied();
+        if (onSpeechRecognitionPermissionListener != null) {
+            onSpeechRecognitionPermissionListener.onPermissionDenied();
+        }
     }
 }

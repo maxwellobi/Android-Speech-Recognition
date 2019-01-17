@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.Locale;
+
 /**
  * Created by Maxwell on 13-Jan-18.
  */
@@ -86,8 +88,12 @@ public class SpeechRecognition {
         this.onSpeechRecognitionPermissionListener = onSpeechRecognitionPermissionListener;
     }
 
-    public void setPreferredLanguage(){
-        throw new UnsupportedOperationException();
+    public void setPreferredLanguage(String preferredLanguage) {
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, preferredLanguage);
+    }
+
+    public void setDevicePreferredLanguage() {
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toString().replace("_", "-"));
     }
 
     /**
